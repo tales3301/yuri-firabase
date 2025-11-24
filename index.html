@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Firebase - Autenticação e Firestore</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Login/Registro -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <h1>Bem-vindo</h1>
+                <p class="subtitle">Faça login ou crie uma conta</p>
+                
+                <div class="auth-tabs">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="register">Registrar</button>
+                </div>
+
+                <!-- Formulário de Login -->
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Senha</label>
+                        <input type="password" id="login-password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                    <div class="divider">
+                        <span>ou</span>
+                    </div>
+                    <button type="button" id="google-login-btn" class="btn btn-google">
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.965-2.186l-2.908-2.258c-.806.54-1.837.86-3.057.86-2.35 0-4.34-1.587-5.052-3.72H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.948 10.696c-.18-.54-.282-1.117-.282-1.696s.102-1.156.282-1.696V4.972H.957C.348 6.175 0 7.55 0 9s.348 2.825.957 4.028l2.991-2.332z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.972L3.948 7.304C4.66 5.17 6.65 3.58 9 3.58z"/>
+                        </svg>
+                        Entrar com Google
+                    </button>
+                    <div id="auth-error" class="error-message"></div>
+                </form>
+
+                <!-- Formulário de Registro -->
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-name">Nome</label>
+                        <input type="text" id="register-name" required placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" required placeholder="seu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Senha</label>
+                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres" minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Criar Conta</button>
+                    <div class="divider">
+                        <span>ou</span>
+                    </div>
+                    <button type="button" id="google-register-btn" class="btn btn-google">
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.965-2.186l-2.908-2.258c-.806.54-1.837.86-3.057.86-2.35 0-4.34-1.587-5.052-3.72H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.948 10.696c-.18-.54-.282-1.117-.282-1.696s.102-1.156.282-1.696V4.972H.957C.348 6.175 0 7.55 0 9s.348 2.825.957 4.028l2.991-2.332z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.972L3.948 7.304C4.66 5.17 6.65 3.58 9 3.58z"/>
+                        </svg>
+                        Registrar com Google
+                    </button>
+                    <div id="register-error" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tela Principal (Dashboard) -->
+        <div id="dashboard-screen" class="screen">
+            <header class="header">
+                <div class="header-content">
+                    <h2>Meu Dashboard</h2>
+                    <div class="user-info">
+                        <span id="user-name"></span>
+                        <button id="logout-btn" class="btn btn-secondary">Sair</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- Chat com IA -->
+                <div class="card chat-card">
+                    <h3>💬 Chat com IA (Gemini)</h3>
+                    <div id="chat-container" class="chat-container">
+                        <div id="chat-messages" class="chat-messages">
+                            <div class="chat-message bot-message">
+                                <div class="message-content">
+                                    Olá! Sou seu assistente de IA. Como posso ajudar você hoje?
+                                </div>
+                            </div>
+                        </div>
+                        <form id="chat-form" class="chat-form">
+                            <input type="text" id="chat-input" placeholder="Digite sua mensagem..." required>
+                            <button type="submit" class="btn btn-primary btn-send">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Formulário para adicionar dados -->
+                <div class="card">
+                    <h3>Adicionar Item</h3>
+                    <form id="add-item-form">
+                        <div class="form-group">
+                            <label for="item-title">Título</label>
+                            <input type="text" id="item-title" required placeholder="Digite um título">
+                        </div>
+                        <div class="form-group">
+                            <label for="item-description">Descrição</label>
+                            <textarea id="item-description" required placeholder="Digite uma descrição" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                    </form>
+                </div>
+
+                <!-- Lista de itens -->
+                <div class="card">
+                    <h3>Meus Itens</h3>
+                    <div id="items-list" class="items-list">
+                        <p class="empty-state">Carregando...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts Firebase -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="gemini-config.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+
+

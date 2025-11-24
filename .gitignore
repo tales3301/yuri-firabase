@@ -1,0 +1,44 @@
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Node modules (se usar npm no futuro)
+node_modules/
+
+# Arquivos de ambiente
+.env
+.env.local
+
+# Arquivos de configuração com credenciais (NÃO enviar ao GitHub!)
+firebase-config.js
+gemini-config.js
+
+# Arquivos de backup e ZIP
+*.zip
+*.txt
+YuriN3-*
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Arquivos de exemplo (manter)
+# firebase-config.example.js
+# gemini-config.example.js
+
+
